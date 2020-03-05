@@ -10,6 +10,7 @@ let canvasWidth = 1440;
 var rainDrops = [];
 let isRaining = false;
 let prevRainState = false;
+let rainCounter = 0;
 
 //define sun variables
 let isSunny = false;
@@ -32,6 +33,9 @@ let clouds;
 let cloudX = 300;
 let cloudY = 20;
 let blueSkyImg;
+
+let gameOver = false;
+
 
 function preload() {
   blueSkyImg = loadImage('assets/blueSky.png');
@@ -77,6 +81,8 @@ function draw() {
   noCursor();
   image(blueSkyImg, 0, 0);
 
+  isGameOver();
+
   //Check if it's raining or sunny
   if(isRaining) {
    background(240);
@@ -93,6 +99,35 @@ function draw() {
   image(sunImg, 10, 10, sunImgWidth, sunImgHeight);
   image(clouds, cloudX, cloudY);
   image(soilImg, 0, 900 - soilImg.height);
+
+  if(plant[currPlantNum].planted == true) {
+    if(currPlantNum == 0) {
+      if((plant[currPlantNum].inGrass(grass[0], 10)) == false) {
+        gameOver = true;
+      }
+    } else if (currPlantNum == 1) {
+        if((plant[currPlantNum].inGrass(grass[1], 800)) == false) {
+          gameOver = true;
+        }
+    } else if (currPlantNum == 2) {
+        if((plant[currPlantNum].inGrass(grass[1], 1300)) == false) {
+          gameOver = true;
+        }
+    } else if (currPlantNum == 3) {
+        if((plant[currPlantNum].inGrass(grass[1], 200)) == false) {
+          gameOver = true;
+        }
+    } else if (currPlantNum == 4) {
+        if((plant[currPlantNum].inGrass(grass[1], 1000)) == false) {
+          gameOver = true;
+        }
+    } else if (currPlantNum == 5) {
+        if((plant[currPlantNum].inGrass(grass[1], 600)) == false) {
+          gameOver = true;
+        }
+    }
+  }
+
 
   if(plant[currPlantNum].planted && (currPlantNum < 5)) {
     currPlantNum++;
@@ -118,7 +153,6 @@ function draw() {
   }
 
 
-  //keep track of prev rain state
   if (isSunny) {
     for(var j= 0; j <= currPlantNum; j++) {
       if(plant[j].planted){
@@ -140,12 +174,22 @@ function draw() {
   }
 
   if(isRaining) {
+    rainCounter++;
     for(var k = 0; k <= currPlantNum; k++) {
       if(plant[k].planted && !plant[k].gotRain) {
         if(plant[k].hasRain(cloudX) && !prevRainState) {
-          plant[k].gotRain = true;
+          if(rainCounter > 200) {
+            plant[k].gotRain = true;
+          }
         }
       }
+    }
+
+    if(rainCounter >= 300) {
+      textAlign(CENTER);
+      textSize(50);
+      fill(255);
+      text('Too much rain!', width / 2, height / 2);
     }
   }
 
@@ -253,4 +297,16 @@ function keyTyped() {
 
   }
 
+}
+
+
+function isGameOver() {
+   if(gameOver){
+    // draw game over text
+    noLoop();
+    textAlign(CENTER);
+    textSize(50);
+    fill(255);
+    text('Game Over', width / 2, height / 2);
+  }
 }
