@@ -22,6 +22,17 @@ class Plant {
     image(this.animation,this.x,this.y);
   }
 
+  inGrass(image, imageX) {
+    if (
+          (this.x > (imageX + image.width)) ||
+          ((this.x + (this.animation).width) < imageX))
+          {
+            print('true'); 
+              return false;
+    }
+    return true;
+  }
+
    hasSun() {
      this.gotSun = true;
    }
